@@ -113,18 +113,18 @@ export function parse(tokens: Token[]): Project {
 
     const project: Project = { name, env: [], services: [] };
 
-    while (tokens[i] && tokens[i].type !== "RBRACE") {
+    while (tokens[i] && tokens[i]?.type !== "RBRACE") {
         const token = tokens[i++];
 
-        if (token.value === "env") {
+        if (token?.value === "env") {
             expect("LBRACE");
-            while (tokens[i] && tokens[i].type !== "RBRACE") {
+            while (tokens[i] && tokens[i]?.type !== "RBRACE") {
                 project.env.push(parseValue());
             }
             expect("RBRACE");
         }
 
-        if (token.value === "service") {
+        if (token?.value === "service") {
             const serviceName = expect("STRING").value!;
             expect("LBRACE");
 
@@ -135,16 +135,16 @@ export function parse(tokens: Token[]): Project {
                 env: [],
             };
 
-            while (tokens[i] && tokens[i].type !== "RBRACE") {
+            while (tokens[i] && tokens[i]?.type !== "RBRACE") {
                 const t = tokens[i++];
 
-                if (t.value === "image") {
+                if (t?.value === "image") {
                     expect("EQUAL");
                     service.image = expect("STRING").value!;
                     expect("SEMICOLON");
                 }
 
-                if (t.value === "port") {
+                if (t?.value === "port") {
                     expect("EQUAL");
                     const from = expect("NUMBER").value!;
                     expect("ARROW");
@@ -153,15 +153,15 @@ export function parse(tokens: Token[]): Project {
                     expect("SEMICOLON");
                 }
 
-                if (t.value === "env") {
-                    if (tokens[i] && tokens[i].type === "COLON") {
+                if (t?.value === "env") {
+                    if (tokens[i] && tokens[i]?.type === "COLON") {
                         i++;
                         expect("IDENT"); // inherit
                         service.inheritEnv = true;
                         expect("SEMICOLON");
                     } else {
                         expect("LBRACE");
-                        while (tokens[i] && tokens[i].type !== "RBRACE") {
+                        while (tokens[i] && tokens[i]?.type !== "RBRACE") {
                             service.env.push(parseValue());
                         }
                         expect("RBRACE");
@@ -238,7 +238,7 @@ import fs from "fs";
 function main() {
     try {
         const filePath = process.argv[2];
-        const distDir = "dist";
+        const distDir = "output";
 
         if (!filePath) {
             console.error("Error: Please provide a configuration file path");
